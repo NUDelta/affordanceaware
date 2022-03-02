@@ -497,7 +497,7 @@ def compute_weather_time_affordances(lat, lng):
         sunrise_in_utc = sunrise.replace(tzinfo=utc)
         sunset_in_utc = sunset.replace(tzinfo=utc)
         output_dict[period_of_day(current_in_utc, sunrise_in_utc, sunset_in_utc)] = True
-        output_dict['sunset_time_minutes'] = sunset.minute
+        output_dict['minutes_around_sunset'] = minutes_around_sunset(current_in_utc, sunset_in_utc)
 
     if forecast_resp and sunrise_sunset_dict:
         # parse forecast
@@ -542,6 +542,16 @@ def period_of_day(current_in_utc, sunrise_in_utc, sunset_in_utc):
     if sunset_in_utc < current_in_utc or sunrise_in_utc > current_in_utc:
         return "nighttime"
 
+def minutes_around_sunset(current_in_utc, sunset_in_utc):
+    """Calculates how many minutes are before or after sun sets below the horizon, on the interval [-60,60]
+
+    :return: Minutes relative to sunset, as an integer. For example,
+        before sunset is would be a positive number (e.g., 30 means 30 minutes before the sun sets below the horizon)
+        after sunset would be a negative numbeer (e.g., -15 means 15 minutes after the sun has set below the horizon)
+    """
+    diff_between_sunset_and_now = sunset_in_utc - current_in_utc
+    if abs(diff_between_sunset_and_now) <= datetime.timedelta(minutes=60):
+        return round(diff_betwee_sunset_and_now.total_seconds() / 60)
 
 def get_local_time(lat, lng):
     """
