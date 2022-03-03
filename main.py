@@ -561,8 +561,7 @@ def minutes_around_sunset(current_in_utc, sunset_in_utc):
         after sunset would be a negative numbeer (e.g., -15 means 15 minutes after the sun has set below the horizon)
     """
     diff_between_sunset_and_now = sunset_in_utc - current_in_utc
-    if abs(diff_between_sunset_and_now) <= datetime.timedelta(minutes=60):
-        return round(diff_between_sunset_and_now.total_seconds() / 60)
+    return round(diff_between_sunset_and_now.total_seconds() / 60)
 
 def get_local_time(lat, lng):
     """
